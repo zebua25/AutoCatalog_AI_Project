@@ -4,7 +4,7 @@ from PIL import Image
 import os
 
 # Path lokal atau gdrive
-csv_path = "/content/drive/MyDrive/AutoCatalog_AI_Project/docs/katalog_otomatis_final.csv"
+csv_path = "katalog_otomatis_final.csv"
 img_folder = "/content/drive/MyDrive/AutoCatalog_AI_Project/dataset/"
 
 # Load data
