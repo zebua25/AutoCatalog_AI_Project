@@ -1,32 +1,35 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image
 import os
 
-# Path lokal atau gdrive
-csv_path = "katalog_otomatis_final.csv"
+# Judul Aplikasi
+st.set_page_config(page_title="Auto Catalog AI", layout="centered")
+st.title("📦 Auto-Catalog Generator dari Gambar + Deskripsi AI")
+
+# Path dinamis untuk file CSV
+csv_path = os.path.join(os.path.dirname(__file__), "katalog_otomatis_final.csv")
+
+# Validasi keberadaan file CSV
+if not os.path.exists(csv_path):
+    st.error("❌ File 'katalog_otomatis_final.csv' tidak ditemukan.")
+    st.info("🔁 Pastikan file CSV sudah diunggah ke folder yang sama dengan app.py di GitHub.")
+    st.stop()
+
+# Load data CSV
 df = pd.read_csv(csv_path)
-img_folder = "/content/drive/MyDrive/AutoCatalog_AI_Project/dataset/"
 
-# Load data
-df = pd.read_csv(csv_path)
+# Tampilkan preview data
+st.subheader("📋 Hasil Katalog Otomatis")
+st.dataframe(df, use_container_width=True)
 
-# UI
-st.title("🛍️ Auto-Catalog E-Commerce by AI")
-st.markdown("Sistem cerdas untuk membuat katalog produk otomatis dari gambar dan AI 🚀")
+# Tampilkan info ringkas
+st.markdown(f"✅ Jumlah Produk: **{len(df)}**")
+st.success("Katalog berhasil dimuat dan ditampilkan! 🎉")
 
-# Tampilkan semua produk
-for index, row in df.iterrows():
-    col1, col2 = st.columns([1, 2])
-
-    with col1:
-        img_path = os.path.join(img_folder, row["Nama File Gambar"])
-        image = Image.open(img_path)
-        st.image(image, caption=row["Judul"], use_column_width=True)
-
-    with col2:
-        st.subheader(row["Judul"])
-        st.markdown(f"**Kategori:** {row['Kategori']}")
-        st.markdown(f"**Harga:** {row['Harga']}")
-        st.markdown(row["Deskripsi"])
-        st.markdown("---")
+# Optional: Simpan ulang file jika user ingin download
+st.download_button(
+    label="📥 Download Katalog CSV",
+    data=df.to_csv(index=False).encode("utf-8"),
+    file_name="katalog_otomatis_final.csv",
+    mime="text/csv"
+)
