@@ -7,11 +7,11 @@ from PIL import Image
 st.set_page_config(page_title="Auto Catalog AI", layout="centered")
 st.title("📦 Auto-Catalog Generator dari Gambar + Deskripsi AI")
 
-# Path file CSV dan folder gambar relatif terhadap file app.py
+# Path file CSV dan folder gambar
 csv_file = "katalog_otomatis_final.csv"
 image_folder = "images"
 
-# Validasi CSV
+# Validasi file CSV
 if not os.path.exists(csv_file):
     st.error(f"❌ File '{csv_file}' tidak ditemukan.")
     st.stop()
@@ -37,7 +37,7 @@ for index, row in df.iterrows():
 
     if os.path.exists(image_path):
         image = Image.open(image_path)
-        col1.image(image, caption=row['Judul'], use_column_width=True)
+        col1.image(image, caption=row['Judul'], use_container_width=True)
     else:
         col1.warning(f"🚫 Gambar tidak ditemukan: {image_filename}")
 
