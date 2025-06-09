@@ -5,6 +5,7 @@ import os
 
 # Path lokal atau gdrive
 csv_path = "katalog_otomatis_final.csv"
+df = pd.read_csv(csv_path)
 img_folder = "/content/drive/MyDrive/AutoCatalog_AI_Project/dataset/"
 
 # Load data
