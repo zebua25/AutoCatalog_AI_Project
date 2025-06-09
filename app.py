@@ -3,43 +3,50 @@ import pandas as pd
 import os
 from PIL import Image
 
+# Konfigurasi halaman
 st.set_page_config(page_title="Auto Catalog AI", layout="centered")
 st.title("📦 Auto-Catalog Generator dari Gambar + Deskripsi AI")
 
-csv_path = os.path.join(os.path.dirname(__file__), "katalog_otomatis_final.csv")
+# Path file CSV dan folder gambar relatif terhadap file app.py
+csv_file = "katalog_otomatis_final.csv"
+image_folder = "images"
 
-if not os.path.exists(csv_path):
-    st.error("❌ File katalog_otomatis_final.csv tidak ditemukan.")
+# Validasi CSV
+if not os.path.exists(csv_file):
+    st.error(f"❌ File '{csv_file}' tidak ditemukan.")
     st.stop()
 
-df = pd.read_csv(csv_path)
+# Load data katalog
+df = pd.read_csv(csv_file)
 
-# Pastikan kolom yang dibutuhkan ada
+# Validasi kolom penting
 required_cols = ['Nama File Gambar', 'Judul', 'Deskripsi', 'Harga']
 for col in required_cols:
     if col not in df.columns:
         st.error(f"❌ Kolom '{col}' tidak ditemukan di CSV.")
         st.stop()
 
-st.subheader("📋 Hasil Katalog Otomatis")
+# Tampilkan katalog
+st.subheader("🖼️ Katalog Otomatis dari AI")
 
-for idx, row in df.iterrows():
+for index, row in df.iterrows():
     col1, col2 = st.columns([1, 3])
 
-    image_path = os.path.join(os.path.dirname(__file__), "images", row["Nama File Gambar"])
-    
+    image_filename = row['Nama File Gambar']
+    image_path = os.path.join(image_folder, image_filename)
+
     if os.path.exists(image_path):
         image = Image.open(image_path)
-        col1.image(image, caption=row["Judul"], use_column_width=True)
+        col1.image(image, caption=row['Judul'], use_column_width=True)
     else:
-        col1.warning(f"🚫 Gambar tidak ditemukan: {row['Nama File Gambar']}")
+        col1.warning(f"🚫 Gambar tidak ditemukan: {image_filename}")
 
     col2.markdown(f"### {row['Judul']}")
     col2.markdown(f"📝 {row['Deskripsi']}")
-    col2.markdown(f"💰 Harga: **{row['Harga']}**")
+    col2.markdown(f"💰 **{row['Harga']}**")
     col2.markdown("---")
 
-# Tombol download CSV hasil
+# Tombol download CSV
 st.download_button(
     label="📥 Download Katalog CSV",
     data=df.to_csv(index=False).encode("utf-8"),
